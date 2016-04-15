@@ -1,0 +1,11 @@
+The AI Solution of 2048 - Dannish Hussain.
+
+The code used in the creation of the GUI for the game 2048, was created by a user called 'Fatal Cubez'.
+He made a series of youtube videos where he created the game in Java, using the MVC architecture. 
+Full credit belongs to him for the GUI, I have simply used his implementation of the game so that I can use various AI techniques on.
+I have made a few tweaks to the design to personalise to my project.
+
+You can find his youtube channel and his series of videos that he created at: https://www.youtube.com/channel/UCjWH41laf9U4fbLixS9eOBQ/feed
+
+Also to note, there were no comments made by the author so any comments found in the project are from me, 
+most likely the addition of extra features that i have added myself.
