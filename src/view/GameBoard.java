@@ -40,6 +40,8 @@ public class GameBoard {
 	
 	private boolean hasStarted;
 	
+	private String formattedTime = "00:00:000";
+	
 	//Implementing score for the current game, and all time high score achieved
 	private int score = 0;
 	private int highScore = 0;
@@ -68,7 +70,7 @@ public class GameBoard {
 		board = new Tile[ROWS][COLS];
 		gameBoard = new BufferedImage(Board_Width, Board_Height, BufferedImage.TYPE_INT_RGB);
 		finalBoard = new BufferedImage(Board_Width, Board_Height, BufferedImage.TYPE_INT_RGB);
-		
+		startTime = System.nanoTime();
 		loadHS();
 		createBoardImage();
 		start();
@@ -83,6 +85,8 @@ public class GameBoard {
 				FileWriter result = new FileWriter(f);
 				BufferedWriter writer = new BufferedWriter(result);
 				writer.write("" + 0);
+				writer.newLine();
+				writer.write("" + Integer.MAX_VALUE);
 				writer.close();
 			}
 			catch(Exception e){
@@ -98,6 +102,7 @@ public class GameBoard {
 			}
 			BufferedReader r = new BufferedReader(new InputStreamReader(new FileInputStream(f2)));
 			highScore = Integer.parseInt(r.readLine());
+			fastestTime = Long.parseLong(r.readLine());
 			r.close();
 		}
 		catch(Exception e){
@@ -112,8 +117,14 @@ public class GameBoard {
 			result = new FileWriter(f3);
 			BufferedWriter writer = new BufferedWriter(result);	
 			
-				if(score>= highScore){
-				writer.write("" + score);
+				
+				writer.write("" + highScore);
+				writer.newLine();
+				if(elapsedTime <= fastestTime && won){
+					writer.write("" + elapsedTime);
+				}
+				else{
+					writer.write("" + fastestTime);
 				}
 			
 			writer.close();
@@ -157,7 +168,12 @@ public class GameBoard {
 		g.drawString("" + score, 30, 40);
 		g.setColor(Color.BLUE);
 		g.drawString("Best: "+ highScore, Game.Width - DrawUtils.getMsgWidth("Best: " + highScore, fontScore, g)-20, 35);
-		}
+		g.setColor(Color.black);
+		g.drawString("Time: " + formattedTime, 30, 90);
+		g.setColor(Color.red);
+		g.drawString("Fastest: " + formatTime(fastestTime), Game.Width - DrawUtils.getMsgWidth("Fastest: " + formatTime(fastestTime), fontScore, g)-20, 90) ;
+	}
+	
 
 	private void start(){
 		for(int i = 0; i < startingTiles; i++){
@@ -189,6 +205,17 @@ public class GameBoard {
 		return SPACING + row * Tile.Height + row * SPACING;
 	}
 	public void update(){
+		
+		
+		if(!won && !!dead){
+			if(hasStarted){
+				elapsedTime = (System.nanoTime() - startTime) / 1000000;
+				formattedTime = formatTime(elapsedTime);
+			}
+			else
+				startTime = System.nanoTime();
+		}
+		
 		checkKeyboard();
 		
 		if(score>=highScore){
@@ -354,6 +381,7 @@ public class GameBoard {
 		}
 	}
 	
+	
 	private void checkDead(){
 		for(int row = 0; row < ROWS; row++){
 			for(int col = 0; col < COLS; col++){
@@ -365,6 +393,7 @@ public class GameBoard {
 		dead = true;
 		setHS();
 	}
+	 
 		
 	private boolean checkSurroundingTiles(int row, int col, Tile cur){
 		if(row >0){
@@ -408,4 +437,68 @@ public class GameBoard {
 			if(!hasStarted)hasStarted = true;
 		}
 	}
+	private String formatTime(long milliSecs) {
+		String formattedTime;
+		final int msPerSecond = 1000,
+				  msPerMinute = 60000,
+				    msPerHour = 3600000;
+		String hour = "";
+		
+		int hours = (int)(milliSecs / msPerHour);
+		if(hours >= 1){
+			milliSecs -= hours * msPerHour;
+			if(hours < 10){
+				hour = "0" + hours;
+			}
+			else{
+				hour = "" + hours;
+			}
+			hour += ":";
+		}
+		
+		String minute;
+		int minutes = (int)(milliSecs / msPerMinute);
+		if(minutes >= 1){
+			milliSecs -= minutes * msPerMinute;
+			if(minutes < 10){
+				minute= "0" + minutes;
+			}
+			else{
+				minute= "" + minutes;
+			}
+		}
+		else{
+			minute= "00";
+		}
+		
+		String second;
+		int seconds = (int)(milliSecs / msPerSecond);
+		if(seconds >= 1){
+			milliSecs -= seconds * msPerSecond;
+			if(seconds < 10){
+				second= "0" + seconds;
+			}
+			else{
+				second= "" + seconds;
+			}
+		}
+		else{
+			second= "00";
+		}
+		
+		String ms;
+		if(milliSecs > 99){
+			ms = "" + milliSecs;
+		}
+		else if(milliSecs > 9){
+			ms = "0" + milliSecs;
+		}
+		else{
+			ms = "00" + milliSecs;
+		}
+		
+		formattedTime = hour + minute + ":" + second + ":" + ms;
+		return formattedTime;
+	}
+	
 }
