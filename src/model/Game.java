@@ -15,8 +15,8 @@ import view.GameBoard;
 
 public class Game extends JPanel implements KeyListener, Runnable{
 
-	public static final int Height = 600;
-	public static final int Width = 400;
+	public static final int Height = 550;
+	public static final int Width = 420;
 	private static final long serialVersionUID = 1L;
 	public static final Font main = new Font ("Times New Roman", Font.PLAIN, 26);
 	private Thread game;

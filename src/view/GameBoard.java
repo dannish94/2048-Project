@@ -117,7 +117,7 @@ public class GameBoard {
 			result = new FileWriter(f3);
 			BufferedWriter writer = new BufferedWriter(result);	
 			
-				
+			
 				writer.write("" + highScore);
 				writer.newLine();
 				if(elapsedTime <= fastestTime && won){
@@ -163,8 +163,9 @@ public class GameBoard {
 		g.drawImage(finalBoard,x,y,null);
 		g2d.dispose();
 		
+		
+		g.setColor(Color.white);
 		g.setFont(fontScore);
-		g.setColor(Color.lightGray);
 		g.drawString("" + score, 30, 40);
 		g.setColor(Color.BLUE);
 		g.drawString("Best: "+ highScore, Game.Width - DrawUtils.getMsgWidth("Best: " + highScore, fontScore, g)-20, 35);
@@ -190,7 +191,7 @@ public class GameBoard {
 			int col = location % COLS;
 			Tile current = board[row][col];
 			if(current == null){
-				int value = random.nextInt(10) < 9 ? 2 : 4;
+				int value = random.nextInt(10) < 9 ? 64 : 32;
 				Tile tile = new Tile(value, getTileX(col), getTileY(row));
 			board[row][col] = tile;
 			notValid = false;
@@ -204,17 +205,19 @@ public class GameBoard {
 	public int getTileY(int row){
 		return SPACING + row * Tile.Height + row * SPACING;
 	}
-	public void update(){
-		
-		
-		if(!won && !!dead){
+	
+	public void update(){	
+		if(won == true || !dead){
 			if(hasStarted){
 				elapsedTime = (System.nanoTime() - startTime) / 1000000;
 				formattedTime = formatTime(elapsedTime);
 			}
-			else
+			else if(dead == true){
 				startTime = System.nanoTime();
+			}
 		}
+		
+		
 		
 		checkKeyboard();
 		
@@ -313,6 +316,7 @@ public class GameBoard {
 		}	
 		return false;
 	}
+	
 	private void moveTiles(Directions dir){
 		boolean canMove = false;
 		int horDir = 0;
@@ -365,7 +369,7 @@ public class GameBoard {
 		}
 		
 		else{
-			System.out.println(dir);
+			System.out.println(dir + " direction is not valid");
 		}
 		
 		for(int row = 0; row < ROWS; row++){
@@ -386,10 +390,11 @@ public class GameBoard {
 		for(int row = 0; row < ROWS; row++){
 			for(int col = 0; col < COLS; col++){
 				if(board[row][col] == null) return;
-				if(checkSurroundingTiles(row,col,board [row][col]))
+				if(checkSurroundingTiles(row,col,board [row][col])){
 					return;
 				}
 			}
+		}
 		dead = true;
 		setHS();
 	}
@@ -406,7 +411,7 @@ public class GameBoard {
 			if(check == null) return true;
 			if(cur.getValue() == check.getValue()) return true;
 		}
-		if(row >0){
+		if(col >0){
 			Tile check = board[row][col-1];
 			if(check == null) return true;
 			if(cur.getValue() == check.getValue()) return true;
@@ -417,7 +422,7 @@ public class GameBoard {
 			if(cur.getValue() == check.getValue()) return true;
 		}
 	return false;
-		}
+	}
 	
 	private void checkKeyboard(){
 		if(Keyboard.typed(KeyEvent.VK_LEFT)){

@@ -11,8 +11,8 @@ public class Tile {
 
 	public static final int Width = 80;
 	public static final int Height = 80;
-	public static final int A_Width = 15;
-	public static final int A_Height = 15;
+	public static final int A_Width = 20;
+	public static final int A_Height = 20;
 	public static final int Speed = 20;
 	
 	private int value; 
@@ -100,7 +100,7 @@ public class Tile {
 		g.setFont(font);
 		
 			int drawX = Width / 2 - DrawUtils.getMsgWidth(""+value, font, g) / 2;
-			int drawY = Width / 2 - DrawUtils.getMsgHeight(""+value, font, g) / 2;
+			int drawY = Height / 2 + DrawUtils.getMsgHeight(""+value, font, g) / 2;
 			g.drawString("" + value, drawX, drawY);
 			g.dispose();
 		}
